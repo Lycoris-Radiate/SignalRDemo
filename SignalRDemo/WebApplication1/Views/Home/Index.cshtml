@@ -1,0 +1,228 @@
+﻿@{
+    ViewBag.Title = "Chat";
+}
+<h2>Chat</h2>
+<style>
+    #shape {
+        width: 100px;
+        height: 100px;
+        background-color: #FF0000;
+    }
+</style>
+<div>hello world~</div>
+@*<div>
+    <input type="text" id="msg" />
+    <br />
+    <input type="button" id="send" value="发送消息" />
+    <div id="record"></div>
+</div>*@
+<div>
+    <div>名称：<p id="userName"></p></div>
+    <div>ConnectionID:<p id="conId"></p></div>
+
+    <div style="width:25%;border:1px solid #ff0000">
+        <div>在线用户列表</div>
+        <ul id="users"></ul>
+    </div>
+    <div id="userBox">
+    </div>
+</div>
+    <div class="container">
+        <input type="text" id="message" />
+            <input type="button" id="sendmessage" value="Send" />
+        <input type="hidden" id="displayname" />
+        <ul id="discussion"></ul>
+    </div>
+    <div id="shape">dd</div>
+    <div id="test" style="height:600px"></div>
+    @section scripts {
+        <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+        <script src="~/Scripts/jquery-ui-1.10.3.min.js"></script>
+        <script src="~/Scripts/echarts-all.js"></script>
+        <script src="~/Scripts/jquery.signalR-2.4.1.js"></script>
+        <script src="~/signalr/hubs"></script>
+        <script>
+
+            function htmlEncode(value) {
+                var encodedValue = $('<div />').text(value).html();
+                return encodedValue;
+            }
+            $(function () {
+                //实时聊天广播形式
+                var chat = $.connection.ChatHub;
+                chat.client.addNewMessageToPage = function (name, message) {
+                    $('#discussion').append('<li><strong>' + htmlEncode(name)
+                        + '</strong>: ' + htmlEncode(message) + '</li>');
+                };
+                $('#displayname').val(prompt('Enter your name:', ''));
+                $('#message').focus();
+                $.connection.hub.start().done(function () {
+                    $('#sendmessage').click(function () {
+                        chat.server.send($('#displayname').val(), $('#message').val());
+                        $('#message').val('').focus();
+                    });
+                });
+
+                //实时动作
+                //    var moveShapeHub = $.connection.MoveShapeHub,
+                //        $shape = $("#shape"),
+
+                //        messageFrequency = 1000,
+                //        //设置发送评率
+                //        updateRate = 1000 / messageFrequency,
+                //        shapeModel = {
+                //            left: 0,
+                //            top: 0
+                //        },
+                //        moved = false;
+                //    moveShapeHub.client.updateShape = function (model) {
+                //        //console.log(model);
+                //        shapeModel = model;
+                //        //使用jQuery创建动画
+                //        $shape.animate(shapeModel, { duration: updateRate, queue: false });
+                //    };
+                //    $.connection.hub.start().done(function () {
+                //        //鼠标拖动的时候
+                //        $shape.draggable({
+                //            drag: function () {
+                //                shapeModel = $shape.offset();//获取鼠标当前坐标
+                //                moved = true;
+                //            }
+                //        });
+                //        setInterval(updateServerModel, updateRate);
+                //    });
+                //    function updateServerModel() {
+                //        // 如果鼠标有移动则发送坐标点
+                //        if (moved) {
+                //            moveShapeHub.server.updateModel(shapeModel);
+                //            moved = false;
+                //        }
+                //    }
+
+                //实时刷新图表
+                //var myChart1 = echarts.init(document.getElementById('test'));
+                //myChart1.setOption({
+                //    title: {
+                //        text: '实时数据加载示例'
+                //    },
+                //    tooltip: {},
+                //    legend: {
+                //        data: ['销量']
+                //    },
+                //    xAxis: {
+                //        data: ["衬衫", "羊毛", "雪纺", "裤子", "高跟", "袜子", "袖子", "领子", "袜子", "脑子"]
+                //    },
+                //    yAxis: {},
+                //    series: [{
+                //        name: '销量',
+                //        type: 'line',
+                //        data: [],
+                //        markLine: {
+                //            data: [{
+                //                type: 'average',
+                //                name: '平均值'
+                //            }]
+                //        },
+                //        lineStyle: {
+                //            color: 'blue'
+                //        }
+                //    }]
+                //});
+                //var mypush = $.connection.ChartHub;
+                //mypush.client.sendTest1 = function (array) {
+                //    console.log(array);
+                //    myChart1.setOption({
+                //        series: [{
+                //            data: array
+                //        }]
+                //    });
+                //};
+                //$.connection.hub.start();
+
+                ////实时聊天一对一
+                //var clients = [];
+                //var chat = $.connection.ChatHub;
+                //console.info(chat);
+                ////显示提示方法
+                //chat.client.showMessage = function (message) {
+                //    alert(message);
+                //}
+                ////注册显示信息的方法
+                //chat.client.addMessage = function (message, connectionId) {
+                //    debugger
+                //    if ($.inArray(connectionId, clients) == -1) {
+                //        showWin(connectionId);
+                //    }
+                //    $("#" + connectionId).find("ul").each(function () {
+                //        $(this).append('<li>' + message + '</li>');
+                //    })
+                //}
+                ////注册显示所有用户的方法
+                //chat.client.getUsers = function (data) {
+
+                //    if (data) {
+                //        var json = $.parseJSON(data);
+
+                //        console.info(json);
+                //        $("#users").html(" ");
+                //        for (var i = 0; i < json.length; i++) {
+                //            var html = '<li>用户名:' + json[i].Name + '<input type="button" value="开始聊天" class="btnc" connectionId="' + json[i].ConnectionID + '"/></li>';
+                //            $("#users").append(html);
+                //        }
+                //    }
+                //}
+                ////注册显示推出聊天提示的方法
+                //chat.client.exitUser = function (data) {
+                //    alert(data);
+                //}
+                ////注册显示个人信息的方法
+                //chat.client.showId = function (data) {
+                //    $("#conId").html(data);
+                //    clients.push(data);
+                //}
+                ////获取用户名称
+                //$('#userName').html(prompt('请输入您的名称', ''));
+
+                ////连接成功后获取自己的信息
+                //$.connection.hub.start().done(function () {
+                //    chat.server.getName($('#userName').html());
+                //});
+                ////开始聊天
+                //function userChat(obj) {
+                //    var connectionId = $(obj).attr('connectionId');
+                //    showWin(connectionId);
+                //}
+
+                //$(document).on("click", ".btnc", function () {
+                //    userChat(this);
+                //});
+
+                //function showWin(connectionId) {
+                //    //var connectionId = $(obj).attr('connectionId');
+                //    clients.push(connectionId);
+                //    var html = '<div style="float:left;margin-left:30px;border:double" id="' + connectionId + '" connectionId="' + connectionId + '">' + connectionId + '"的房间聊天记录如下:<button οnclick="exitChat(this)">退出</button><ul></ul><input type="text" /> <input type="button" value="发送" class="send"/></div>';
+                //    $("#userBox").append(html);
+                //}
+                //function exitChat(btnObj) {
+                //    //  var connectionId = $(btnObj).parent().attr("connectionId");
+                //    $(btnObj).parent().remove();
+                //    //chat.server.exitChat(connectionId);
+                //}
+
+                //$(document).on("click", ".send", function () {
+                //    sendMessage(this);
+                //});
+                ////发送消息
+                //function sendMessage(data) {
+                //    var message = $(data).prev().val();
+                //    var userObj = $(data).parent();
+                //    var username = $("#userName").html();
+                //    message = username + ":" + message;
+                //    console.info($(userObj).attr("connectionId"));
+                //    var targetConnectionId = $(userObj).attr("connectionId");
+                //    chat.server.sendMessage(targetConnectionId, message);
+                //    $(data).prev().val("");
+                //}
+            });
+        </script>
+    }

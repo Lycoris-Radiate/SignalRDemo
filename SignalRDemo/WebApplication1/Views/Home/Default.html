@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>SignalR MoveShape Demo</title>
+    <style>
+        #shape {
+            width: 100px;
+            height: 100px;
+            background-color: #FF0000;
+        }
+    </style>
+</head>
+<body>
+    <script src="Scripts/jquery-1.10.2.min.js"></script>
+    <script src="Scripts/jquery-ui-1.10.3.min.js"></script>
+    <script src="Scripts/jquery.signalR-2.0.0.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script>
+        $(function () {
+            var moveShapeHub = $.connection.moveShapeHub,
+                $shape = $("#shape"),
+                // 每秒最多发送10条消息
+                messageFrequency = 10,
+                //设置发送评率
+                updateRate = 1000 / messageFrequency,
+                shapeModel = {
+                    left: 0,
+                    top: 0
+                },
+                moved = false;
+            moveShapeHub.client.updateShape = function (model) {
+                shapeModel = model;
+                //使用jQuery创建动画
+                $shape.animate(shapeModel, { duration: updateRate, queue: false });
+            };
+            $.connection.hub.start().done(function () {
+                //鼠标拖动的时候
+                $shape.draggable({
+                    drag: function () {
+                        shapeModel = $shape.offset();//获取鼠标当前坐标
+                        moved = true;
+                    }
+                });
+                setInterval(updateServerModel, updateRate);
+            });
+            function updateServerModel() {
+                // 如果鼠标有移动则发送坐标点
+                if (moved) {
+                    moveShapeHub.server.updateModel(shapeModel);
+                    moved = false;
+                }
+            }
+        });
+    </script>
+
+    <div id="shape" />
+</body>
+</html>
