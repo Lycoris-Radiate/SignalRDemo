@@ -56,19 +56,19 @@
             //(3). 手动指定多个，如果不兼容，依次向后选择：conn.start({ transport: ['foreverFrame','webSockets'] }).done(function () {});
             $(function () {
                 //实时聊天广播形式
-                var chat = $.connection.ChatHub;
-                chat.client.addNewMessageToPage = function (name, message) {
-                    $('#discussion').append('<li><strong>' + htmlEncode(name)
-                        + '</strong>: ' + htmlEncode(message) + '</li>');
-                };
-                $('#displayname').val(prompt('输入名字:', ''));
-                $('#message').focus();
-                $.connection.hub.start().done(function () {
-                    $('#sendmessage').click(function () {
-                        chat.server.send($('#displayname').val(), $('#message').val());
-                        $('#message').val('').focus();
-                    });
-                });
+                //var chat = $.connection.ChatHub;
+                //chat.client.addNewMessageToPage = function (name, message) {
+                //    $('#discussion').append('<li><strong>' + htmlEncode(name)
+                //        + '</strong>: ' + htmlEncode(message) + '</li>');
+                //};
+                //$('#displayname').val(prompt('输入名字:', ''));
+                //$('#message').focus();
+                //$.connection.hub.start().done(function () {
+                //    $('#sendmessage').click(function () {
+                //        chat.server.send($('#displayname').val(), $('#message').val());
+                //        $('#message').val('').focus();
+                //    });
+                //});
 
                 //实时动作
                 //    var moveShapeHub = $.connection.MoveShapeHub,
@@ -146,90 +146,93 @@
                 //};
                 //$.connection.hub.start();
 
-                ////实时聊天一对一
-                //var clients = [];
-                //var chat = $.connection.ChatHub;
-                //console.info(chat);
-                ////显示提示方法
-                //chat.client.showMessage = function (message) {
-                //    alert(message);
-                //}
-                ////注册显示信息的方法
-                //chat.client.addMessage = function (message, connectionId) {
-                //    debugger
-                //    if ($.inArray(connectionId, clients) == -1) {
-                //        showWin(connectionId);
-                //    }
-                //    $("#" + connectionId).find("ul").each(function () {
-                //        $(this).append('<li>' + message + '</li>');
-                //    })
-                //}
-                ////注册显示所有用户的方法
-                //chat.client.getUsers = function (data) {
+                //实时聊天一对一
+                var clients = [];
+                var chat = $.connection.ChatHub;
+                console.info(chat);
+                //显示提示方法
+                chat.client.showMessage = function (message) {
+                    alert(message);
+                }
+                //注册显示信息的方法
+                chat.client.addMessage = function (message, connectionId) {
+                    debugger
+                    if ($.inArray(connectionId, clients) == -1) {
+                        showWin(connectionId);
+                    }
+                    $("#" + connectionId).find("ul").each(function () {
+                        $(this).append('<li>' + message + '</li>');
+                    })
+                }
+                //注册显示所有用户的方法
+                chat.client.getUsers = function (data) {
 
-                //    if (data) {
-                //        var json = $.parseJSON(data);
+                    if (data) {
+                        var json = $.parseJSON(data);
 
-                //        console.info(json);
-                //        $("#users").html(" ");
-                //        for (var i = 0; i < json.length; i++) {
-                //            var html = '<li>用户名:' + json[i].Name + '<input type="button" value="开始聊天" class="btnc" connectionId="' + json[i].ConnectionID + '"/></li>';
-                //            $("#users").append(html);
-                //        }
-                //    }
-                //}
-                ////注册显示推出聊天提示的方法
-                //chat.client.exitUser = function (data) {
-                //    alert(data);
-                //}
-                ////注册显示个人信息的方法
-                //chat.client.showId = function (data) {
-                //    $("#conId").html(data);
-                //    clients.push(data);
-                //}
-                ////获取用户名称
-                //$('#userName').html(prompt('请输入您的名称', ''));
+                        console.info(json);
+                        $("#users").html(" ");
+                        for (var i = 0; i < json.length; i++) {
+                            var html = '<li>用户名:' + json[i].Name + '<input type="button" value="开始聊天" class="btnc" connectionId="' + json[i].ConnectionID + '"/></li>';
+                            $("#users").append(html);
+                        }
+                    }
+                }
+                //注册显示推出聊天提示的方法
+                chat.client.exitUser = function (data) {
+                    alert(data);
+                }
+                //注册显示个人信息的方法
+                chat.client.showId = function (data) {
+                    $("#conId").html(data);
+                    clients.push(data);
+                }
+                //获取用户名称
+                $('#userName').html(prompt('请输入您的名称', ''));
 
-                ////连接成功后获取自己的信息
-                //$.connection.hub.start().done(function () {
-                //    chat.server.getName($('#userName').html());
-                //});
-                ////开始聊天
-                //function userChat(obj) {
-                //    var connectionId = $(obj).attr('connectionId');
-                //    showWin(connectionId);
-                //}
+                //连接成功后获取自己的信息
+                $.connection.hub.start().done(function () {
+                    chat.server.getName($('#userName').html());
+                });
+                //开始聊天
+                function userChat(obj) {
+                    var connectionId = $(obj).attr('connectionId');
+                    showWin(connectionId);
+                }
 
-                //$(document).on("click", ".btnc", function () {
-                //    userChat(this);
-                //});
+                $(document).on("click", ".btnc", function () {
+                    userChat(this);
+                });
 
-                //function showWin(connectionId) {
-                //    //var connectionId = $(obj).attr('connectionId');
-                //    clients.push(connectionId);
-                //    var html = '<div style="float:left;margin-left:30px;border:double" id="' + connectionId + '" connectionId="' + connectionId + '">' + connectionId + '"的房间聊天记录如下:<button οnclick="exitChat(this)">退出</button><ul></ul><input type="text" /> <input type="button" value="发送" class="send"/></div>';
-                //    $("#userBox").append(html);
-                //}
-                //function exitChat(btnObj) {
-                //    //  var connectionId = $(btnObj).parent().attr("connectionId");
-                //    $(btnObj).parent().remove();
-                //    //chat.server.exitChat(connectionId);
-                //}
-
-                //$(document).on("click", ".send", function () {
-                //    sendMessage(this);
-                //});
-                ////发送消息
-                //function sendMessage(data) {
-                //    var message = $(data).prev().val();
-                //    var userObj = $(data).parent();
-                //    var username = $("#userName").html();
-                //    message = username + ":" + message;
-                //    console.info($(userObj).attr("connectionId"));
-                //    var targetConnectionId = $(userObj).attr("connectionId");
-                //    chat.server.sendMessage(targetConnectionId, message);
-                //    $(data).prev().val("");
-                //}
+                function showWin(connectionId) {
+                    //var connectionId = $(obj).attr('connectionId');
+                    clients.push(connectionId);
+                    var html = '<div style="float:left;margin-left:30px;border:double" id="' + connectionId + '" connectionId="' + connectionId + '">' + connectionId + '"的房间聊天记录如下:<input type="button" value="退出" class="exitChat" /><ul></ul><input type="text" /> <input type="button" value="发送" class="send"/></div>';
+                    $("#userBox").append(html);
+                }
+                function exitChat(btnObj) {
+                    //var connectionId = $(btnObj).parent().attr("connectionId");
+                    $(btnObj).parent().remove();
+                    //chat.server.exitChat(connectionId);
+                }
+                $(document).on("click", ".exitChat", function () {
+                    exitChat(this);
+                });
+                
+                $(document).on("click", ".send", function () {
+                    sendMessage(this);
+                });
+                //发送消息
+                function sendMessage(data) {
+                    var message = $(data).prev().val();
+                    var userObj = $(data).parent();
+                    var username = $("#userName").html();
+                    message = username + ":" + message;
+                    console.info($(userObj).attr("connectionId"));
+                    var targetConnectionId = $(userObj).attr("connectionId");
+                    chat.server.sendMessage(targetConnectionId, message);
+                    $(data).prev().val("");
+                }
             });
         </script>
     }

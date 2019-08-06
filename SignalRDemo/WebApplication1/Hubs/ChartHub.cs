@@ -24,7 +24,7 @@ namespace WebApplication1.Hubs
         {
             // 获取所有连接的句柄，方便后面进行消息广播
             _hubContext = GlobalHost.ConnectionManager.GetHubContext<ChartHub>();
-            //lun轮训
+            //定时器
             _broadcastLoop = new Timer(
                 BroadcastShape,
                 null,
@@ -61,9 +61,9 @@ namespace WebApplication1.Hubs
     public class ChartHub : Hub
     {
         private Broadcaster _broadcaster;
-
-        public ChartHub()
-            : this(Broadcaster.Instance)
+        //在构造函数里边在调用其它形式的构造函数是编译不过去的.
+        //构造函数后边加:this(....)就是再调用其他形式的构造函数
+        public ChartHub() : this(Broadcaster.Instance)
         {
 
         }
