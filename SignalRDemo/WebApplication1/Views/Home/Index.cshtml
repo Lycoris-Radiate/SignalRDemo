@@ -47,6 +47,12 @@
                 var encodedValue = $('<div />').text(value).html();
                 return encodedValue;
             }
+
+         //   如何指定传输协议：
+
+　　       //(1). 默认选择：conn.start().done(function () {});
+
+         //   (2). 手动指定：conn.start({ transport: 'serverSentEvents' }).done(function () {});
             $(function () {
                 //实时聊天广播形式
                 var chat = $.connection.ChatHub;
