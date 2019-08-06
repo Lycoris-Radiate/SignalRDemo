@@ -52,7 +52,8 @@
 
 　　       //(1). 默认选择：conn.start().done(function () {});
 
-         //   (2). 手动指定：conn.start({ transport: 'serverSentEvents' }).done(function () {});
+            //   (2). 手动指定：conn.start({ transport: 'serverSentEvents' }).done(function () {});
+            //(3). 手动指定多个，如果不兼容，依次向后选择：conn.start({ transport: ['foreverFrame','webSockets'] }).done(function () {});
             $(function () {
                 //实时聊天广播形式
                 var chat = $.connection.ChatHub;
