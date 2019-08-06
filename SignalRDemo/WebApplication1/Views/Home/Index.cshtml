@@ -61,7 +61,7 @@
                     $('#discussion').append('<li><strong>' + htmlEncode(name)
                         + '</strong>: ' + htmlEncode(message) + '</li>');
                 };
-                $('#displayname').val(prompt('Enter your name:', ''));
+                $('#displayname').val(prompt('输入名字:', ''));
                 $('#message').focus();
                 $.connection.hub.start().done(function () {
                     $('#sendmessage').click(function () {
