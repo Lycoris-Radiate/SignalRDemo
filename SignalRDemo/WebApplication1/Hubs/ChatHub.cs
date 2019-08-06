@@ -32,7 +32,7 @@ namespace WebApplication1
             var user = users.Where(s => s.ConnectionID == connectionId).FirstOrDefault();
             if (user != null)
             {
-                Clients.Client(connectionId).addMessage(DateTime.Now+"："+ message, Context.ConnectionId);//Context.ConnectionId:自己id
+                Clients.Client(connectionId).addMessage(DateTime.Now+"："+ message, Context.ConnectionId);
                 //给自己发送，把用户的ID传给自己
                 Clients.Client(Context.ConnectionId).addMessage(DateTime.Now+"："+message, connectionId);
             }
