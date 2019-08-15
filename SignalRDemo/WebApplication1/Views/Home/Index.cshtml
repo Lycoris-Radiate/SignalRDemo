@@ -51,7 +51,7 @@
             //   如何指定传输协议 Web Socket, Server Sent Events 和 Long Polling.：
 
 　　       //(1). 默认选择：conn.start().done(function () {});
-
+            //$.connection.hub.url =另外项目的url;
             //   (2). 手动指定：conn.start({ transport: 'serverSentEvents' }).done(function () {});
             //(3). 手动指定多个，如果不兼容，依次向后选择：conn.start({ transport: ['foreverFrame','webSockets'] }).done(function () {});
             $(function () {
