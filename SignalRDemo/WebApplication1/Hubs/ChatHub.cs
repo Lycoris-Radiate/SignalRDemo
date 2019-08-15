@@ -28,12 +28,13 @@ namespace WebApplication1
         /// <param name="message"></param>
         public void SendMessage(string connectionId, string message)
         {
-            Clients.All.hello();
+            //Clients.All.hello();
             var user = users.Where(s => s.ConnectionID == connectionId).FirstOrDefault();
             if (user != null)
             {
+                //connectionId：指定对方的connectionId
                 Clients.Client(connectionId).addMessage(DateTime.Now+"："+ message, Context.ConnectionId);
-                //给自己发送，把用户的ID传给自己
+                // Context.ConnectionId 当前页面的connectionId 使自己也能看到自己发送出去的消息
                 Clients.Client(Context.ConnectionId).addMessage(DateTime.Now+"："+message, connectionId);
             }
             else
