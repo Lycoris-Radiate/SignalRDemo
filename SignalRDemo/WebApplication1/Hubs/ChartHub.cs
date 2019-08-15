@@ -62,7 +62,7 @@ namespace WebApplication1.Hubs
     {
         private Broadcaster _broadcaster;
         //在构造函数里边在调用其它形式的构造函数是编译不过去的.
-        //构造函数后边加:this(....)就是再调用其他形式的构造函数
+        //构造函数后边加:this(....)就是再调用其他形式的构造函数即索引器
         public ChartHub() : this(Broadcaster.Instance)
         {
 
